@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajout contact{% endblock %}
+
+{% block body %}
+<section>
+        <div align="center">
+                <h4>Fiche Contact</h4>
+        {% if form is defined %}
+    {{ form_start(form) }}
+        {{ form_row(form.nom) }}
+                <br>
+        {{ form_row(form.prenom) }}
+                <br>
+        {{ form_row(form.email) }}
+                <br>
+        {{ form_row(form.message) }}
+                <br>
+        {{ form_row(form.id_departement) }}
+                <br>
+        <button type="submit">Valider</button>
+    {{ form_end(form) }}
+        {% endif %}
+        </div>
+</section>
+{% endblock %}

@@ -3,106 +3,150 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\ContactRepository")
+ * @ORM\Entity
+ * @ORM\Table(name="contact")
  */
-class Contact
-{
+class Contact{
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $nom;
-
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $prenom;
-
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $email;
-
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $message;
-
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Departement", inversedBy="contacts")
      */
-    private $departement;
+    private $id_departement;
 
-    public function getId(): ?int
+    /**
+     * @return mixed
+     */
+    public function getId()
     {
         return $this->id;
     }
 
-    public function getNom(): ?string
+    /**
+     * @param mixed $id
+     * @return Contact
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNom()
     {
         return $this->nom;
     }
 
-    public function setNom(string $nom): self
+    /**
+     * @param mixed $nom
+     * @return Contact
+     */
+    public function setNom($nom)
     {
         $this->nom = $nom;
-
         return $this;
     }
 
-    public function getPrenom(): ?string
+    /**
+     * @return mixed
+     */
+    public function getPrenom()
     {
         return $this->prenom;
     }
 
-    public function setPrenom(string $prenom): self
+    /**
+     * @param mixed $prenom
+     * @return Contact
+     */
+    public function setPrenom($prenom)
     {
         $this->prenom = $prenom;
-
         return $this;
     }
 
-    public function getEmail(): ?string
+    /**
+     * @return mixed
+     */
+    public function getEmail()
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    /**
+     * @param mixed $email
+     * @return Contact
+     */
+    public function setEmail($email)
     {
         $this->email = $email;
-
         return $this;
     }
 
-    public function getMessage(): ?string
+    /**
+     * @return mixed
+     */
+    public function getMessage()
     {
         return $this->message;
     }
 
-    public function setMessage(string $message): self
+    /**
+     * @param mixed $message
+     * @return Contact
+     */
+    public function setMessage($message)
     {
         $this->message = $message;
-
         return $this;
     }
 
-    public function getIdDepartement(): ?Departement
+    /**
+     * @return mixed
+     */
+    public function getIdDepartement()
     {
-        return $this->id_departement;
+        return $this-> departement;
     }
 
-    public function setIdDepartement(?Departement $id_departement): self
+    /**
+     * @param mixed $id_departement
+     * @return Contact
+     */
+    public function setIdDepartement($id_departement)
     {
         $this->id_departement = $id_departement;
-
         return $this;
     }
+
 }

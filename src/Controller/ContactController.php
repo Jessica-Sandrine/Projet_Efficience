@@ -2,55 +2,44 @@
 
 namespace App\Controller;
 
+use App\Entity\Departement;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\Contact;
 use App\Form\ContactType;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Controller\Annotations as Rest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use App\Entity\Contact;
 
-/**
- * Contact controller.
- * @Route("/api",name="api_")
- */
-class ContactController extends FOSRestController
+
+class ContactController extends AbstractController
 {
     /**
-     * Lists all Contacts.
-     * @Rest\Get("/contacts")
-     *
-     * @return Response
+     * @Route("/contact", name="contact")
      */
-    public function getContactAction()
+    public function index(Request $request)
     {
-        $repository = $this->getDoctrine()->getRepository(Contact::class);
-            $contacts = $repository->findAll();
-        return $this->handleView($this->view($contacts));
-    }
-
-    /**
-     * Create Contact.
-     * @Rest\Post("/contact")
-     *
-     * @return Response
-     */
-    public function postContactAction(Request $request, \Swift_Mailer $mailer)
-    {
+   		 $em      = $this->getDoctrine()->getManager();
         $contact = new Contact();
-        $form = $this->createForm(ContactType::class, $contact);
-
-        $data = json_decode($request->getContent(), true);
-        $form->submit($data);
-
-        if($form->isSubmitted() && $form->isValid()){
+        $form    = $this->createForm(ContactType::class, $contact);
+          if ($request->isMethod('POST')&& $form->handleRequest($request)->isValid()) {
             $departement  = $contact->getIdDepartement();
-
-            $em = $this->getDoctrine()->getManager();
             $em->persist($contact);
             $em->flush();
+            
+            $mail = sender();
+            return new Response('Nouveau contact ajouté!');
+              }
+        return $this->render('contact/index.html.twig', [
+           'form' => $form->createView(),
+        ]);
+    }
 
-            $message = (new \Swift_Message('Enregistrement du nouveau contact'))
+    public function sender(\Swift_Mailer $mailer,$name)
+          $em      = $this->getDoctrine()->getManager();
+          $contact = new Contact();
+          $departement  = $contact->getIdDepartement();
+      
+            $message = (new \Swift_Message('Hello Email'))
                 ->setFrom('atayisandrine98@gmail.com')
                 ->setTo($departement->getEmailDepartement())
                 ->setBody($this->renderView('emails/contact.html.twig', [
@@ -60,12 +49,9 @@ class ContactController extends FOSRestController
                     'email' => $contact->getEmail()
                 ]),'text/html');
             $mailer->send($message);
-            return $this->handleView($this->view(['status' => 'ok'], Response::HTTP_CREATED));
-        }
-
-        return $this->handleView($this->view($form->getErrors()));
+            
+      
     }
-
 
 
 }
